@@ -1,0 +1,56 @@
+# ============================================================================
+# TurboGolem v1.1 — Copper Golem Enhancement Plugin
+# ============================================================================
+# 
+# TurboGolem supercharges vanilla copper golems by increasing their sorting
+# speed, batch size, and chest detection range. It also adds the /supergolem
+# command to spawn stationary "super" golems for instant item sorting.
+#
+# All values can be hot-reloaded: /turbogolem reload
+# ============================================================================
+
+# ─── Regular Copper Golems ─────────────────────────────────────────────────
+
+# How often to scan for copper golems and process item sorting.
+# 20 ticks = 1 second. Lower = faster but more CPU usage.
+scan-interval-ticks: 60
+
+# Search radius for detecting copper chests and target containers.
+# Horizontal: X/Z range from the golem's position.
+# Vertical: Y range from the golem's position.
+search-radius-horizontal: 24.0
+search-radius-vertical: 8.0
+
+# Maximum items transferred per container slot per scan cycle.
+# Values above 64 will still be capped at 64 (a full stack).
+batch-size: 8
+
+# Maximum number of copper chests to process per golem per scan cycle.
+max-chests: 3
+
+# Whether to show visual particle effects during sorting.
+# Regular golems show "happy villager" particles on the source chest.
+# Super golems also show particles on destination containers.
+show-particles: true
+
+# Whether to log detailed sorting activity to the server console.
+# Useful for debugging; leave false in production.
+show-messages: false
+
+# Whether regular copper golems may place items into empty containers.
+# true  = items go to any container with a free slot (needed for sorters).
+# false = items only go to containers that already contain the matching item.
+allow-empty-chests: true
+
+# ─── Super Golems (/supergolem command) ────────────────────────────────────
+
+# Scan interval for super golems in ticks. 10 ticks = 0.5 seconds.
+super-scan-interval-ticks: 10
+
+# Default search radius for super golems (can be overridden per-golem).
+# Usage: /supergolem 16  →  uses a 16-block radius for that specific golem.
+super-radius: 8.0
+
+# Whether super golems may place items into empty containers.
+# Recommended: true for item sorters, false for strict matching.
+super-allow-empty-chests: true
