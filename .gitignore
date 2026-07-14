@@ -1,0 +1,16 @@
+# Build output
+out/
+*.class
+!*.java
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Distribution (upload separately as release)
+TurboGolem-v*.jar
