@@ -38,9 +38,10 @@ show-particles: true
 show-messages: false
 
 # Whether regular copper golems may place items into empty containers.
-# true  = items go to any container with a free slot (needed for sorters).
-# false = items only go to containers that already contain the matching item.
-allow-empty-chests: true
+# ⚠️  WARNING: setting this to true will scatter items to ANY empty container
+# in range — including barrels, hoppers, random chests you forgot about.
+# Recommended: false (strict matching), true only if you have a sorter setup.
+allow-empty-chests: false
 
 # ─── Super Golems (/supergolem command) ────────────────────────────────────
 
