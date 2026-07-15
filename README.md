@@ -113,6 +113,29 @@ Turbo-charge copper golems on your Paper 26.2 server. Boost sorting speed, enabl
 2. 重启服务器或 `/plugman load TurboGolem`
 3. 配置文件自动生成在 `plugins/TurboGolem/config.yml`
 
+### 配置详解
+
+#### 普通铜傀儡
+
+| 参数 | 默认值 | 设计理由 |
+|------|--------|----------|
+| `scan-interval-ticks` | 60（3秒） | 原版约 7 秒，3 秒足够快。设太低每 2 秒扫 2.5 万格方块，纯浪费 CPU |
+| `search-radius-horizontal` | 24 | 原版 32 格扫 7 万格/次，降到 24 减少 65% 扫描量，体感无差别 |
+| `search-radius-vertical` | 8 | 垂直 8 格覆盖地面仓库+地下 1 层，基本够用 |
+| `batch-size` | 8 | 64（瞬间清空）→ 32（太快）→ 16（还是快）→ 8（看得见分批流动的过程） |
+| `max-chests` | 3 | 一只铜傀儡身边通常只放 1-2 个铜箱子，3 是合理上限，设 50 纯浪费 |
+| `allow-empty-chests` | **false** | 防止普通铜傀儡把物品偷偷搬到 50 格外的空漏斗里，让你以为物品消失了 |
+
+#### 超级铜傀儡
+
+| 参数 | 默认值 | 设计理由 |
+|------|--------|----------|
+| `super-scan-interval-ticks` | 10（0.5秒） | 只有 1 个、原地不动、只扫脚下 1 个铜箱子，性能开销极小。0.5 秒是看得见"流动"又不至于一闪没的平衡点 |
+| `super-radius` | 8 | 以铜箱子为中心画长方体。8×8×8≈5000 格，轻量。`/supergolem 16` 扩大到约 4 万格——可自定义 |
+| `super-allow-empty-chests` | **true** | 分类器第一个箱子是空的，需要第一批物品"开路"。推进去后同类物品自动优先走这个通道 |
+
+**一句话总结**：普通铜傀儡保守（不乱搬），超级铜傀儡激进（主动开路）。
+
 ### 环境要求
 
 - Paper 1.21.4 / 26.2+
