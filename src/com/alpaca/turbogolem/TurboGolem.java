@@ -12,6 +12,7 @@ import org.bukkit.inventory.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -347,12 +348,38 @@ public class TurboGolem extends JavaPlugin implements Listener {
                         Location destLoc = target.getLocation();
                         if (destLoc != null) {
                             touchedDestinations.add(destLoc.clone().add(0.5, 0.8, 0.5));
+                            // For double chests, also add the other half
+                            if (target instanceof Chest chest && chest.getInventory().getSize() > 27) {
+                                Block destBlock = destLoc.getBlock();
+                                for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST}) {
+                                    Block neighbor = destBlock.getRelative(face);
+                                    if (neighbor.getType() == destBlock.getType()) {
+                                        touchedDestinations.add(neighbor.getLocation().clone().add(0.5, 0.8, 0.5));
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
             totalMoved += moved;
             if (copperChest.getBlockInventory().isEmpty()) break;
+        }
+
+        // Draw particle lines from copper chest to each destination
+        if (showParticles && !touchedDestinations.isEmpty()) {
+            Location srcCenter = copperChest.getLocation().clone().add(0.5, 0.5, 0.5);
+            for (Location dest : touchedDestinations) {
+                double dist = srcCenter.distance(dest);
+                if (dist < 0.5) continue;
+                Vector dir = dest.toVector().subtract(srcCenter.toVector()).normalize();
+                for (double d = 0; d < dist; d += 0.4) {
+                    world.spawnParticle(Particle.END_ROD,
+                            srcCenter.clone().add(dir.clone().multiply(d)),
+                            1, 0, 0, 0, 0);
+                }
+            }
         }
 
         // Sustained particle effect at destinations (10 seconds)
@@ -364,7 +391,7 @@ public class TurboGolem extends JavaPlugin implements Listener {
                     public void run() {
                         if (tick >= 200) { cancel(); return; }
                         world.spawnParticle(Particle.HAPPY_VILLAGER, dest,
-                                3, 0.4, 0.4, 0.4, 0.5);
+                                5, 0.5, 0.5, 0.5, 0.5);
                         tick += 5;
                     }
                 }.runTaskTimer(TurboGolem.this, 0L, 5L);
@@ -499,7 +526,20 @@ public class TurboGolem extends JavaPlugin implements Listener {
                     sender.sendMessage(ChatColor.GREEN + "Forced scan complete. Moved " +
                             moved + " items.");
                 }
-                default -> sender.sendMessage(ChatColor.RED + "Unknown subcommand. Use: reload, info, scan");
+                case "killgolems" -> {
+                    int count = 0;
+                    for (UUID uuid : new HashSet<>(superGolems)) {
+                        Entity e = Bukkit.getEntity(uuid);
+                        if (e != null && e.isValid()) {
+                            e.remove();
+                            count++;
+                        }
+                        superGolems.remove(uuid);
+                        superGolemRadius.remove(uuid);
+                    }
+                    sender.sendMessage(ChatColor.GREEN + "Removed " + count + " super golem(s).");
+                }
+                default -> sender.sendMessage(ChatColor.RED + "Unknown subcommand. Use: reload, info, scan, killgolems");
             }
             return true;
         }
@@ -560,7 +600,7 @@ public class TurboGolem extends JavaPlugin implements Listener {
 
             // Make it stationary
             golem.setGravity(false);
-            golem.setInvulnerable(true);
+            golem.setInvulnerable(true);  // immune to damage/knockback — use /turbogolem killgolems to remove
             golem.setSilent(true);
             golem.setCollidable(false);
             try {
