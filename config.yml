@@ -1,0 +1,55 @@
+# ============================================================================
+# TurboGolem v1.3.5 — Copper Golem Enhancement Plugin
+# ============================================================================
+#
+# Two-tier design:
+#   Regular golems — small-range auto-sorter, can create new categories.
+#   Super golems   — large-range precision sorter, strict matching only.
+#
+# All values can be hot-reloaded: /turbogolem reload
+# ============================================================================
+
+# ─── Regular Copper Golems ─────────────────────────────────────────────────
+
+# How often to scan for copper golems and process item sorting.
+# 20 ticks = 1 second. Lower = faster but more CPU usage.
+scan-interval-ticks: 60
+
+# Search radius for detecting copper chests and target containers.
+# Horizontal: X/Z range from the golem's position.
+# Vertical: Y range from the golem's position.
+# KEPT SMALL by default — regular golems are close-range helpers.
+search-radius-horizontal: 8.0
+search-radius-vertical: 4.0
+
+# Maximum items transferred per container slot per scan cycle.
+# Values above 64 will still be capped at 64 (a full stack).
+batch-size: 8
+
+# Maximum number of copper chests to process per golem per scan cycle.
+max-chests: 3
+
+# Whether to show visual particle effects during sorting.
+show-particles: true
+
+# Whether to log detailed sorting activity to the server console.
+show-messages: false
+
+# Whether regular copper golems may place items into empty containers.
+# ENABLED — small range + allow empty = auto-categorizer that won't scatter
+# items across the map because the range is limited to 8 blocks.
+allow-empty-chests: true
+
+# ─── Super Golems (/supergolem command) ────────────────────────────────────
+
+# Scan interval for super golems in ticks. 10 ticks = 0.5 seconds.
+super-scan-interval-ticks: 10
+
+# Default search radius for super golems (can be overridden per-golem).
+# Usage: /supergolem 16  →  uses a 16-block radius for that specific golem.
+super-radius: 8.0
+
+# Whether super golems may place items into empty containers.
+# DISABLED — super golems are precision sorters: they only put items where
+# matching items already exist. This prevents accidental scattering.
+super-allow-empty-chests: false

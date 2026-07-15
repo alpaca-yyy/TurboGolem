@@ -1,0 +1,28 @@
+name: TurboGolem
+version: "1.3.5"
+main: com.alpaca.turbogolem.TurboGolem
+api-version: "1.21"
+description: "Turbo-charge copper golems — faster multi-chest sorting, larger batches, and stationary super golems"
+
+author: alpaca_yyy
+website: https://github.com/alpacayyy/TurboGolem
+
+commands:
+  turbogolem:
+    description: TurboGolem admin commands
+    usage: "/turbogolem <reload|info|scan>"
+    aliases: [tgolem, tg]
+    permission: turbogolem.admin
+  supergolem:
+    description: Spawn a stationary super copper golem that sorts items from the copper chest beneath
+    usage: "/supergolem [radius]"
+    aliases: [sgolem, sg]
+    permission: turbogolem.admin
+
+permissions:
+  turbogolem.admin:
+    description: Access to all TurboGolem admin commands
+    default: op
+  turbogolem.use:
+    description: Basic TurboGolem usage
+    default: true
